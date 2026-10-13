@@ -1,0 +1,12 @@
+resources:
+  jobs:
+    market_intel:
+      name: "Lakebase RAG Demo · market intelligence (4.5M rows → Lakebase synced table)"
+      parameters:
+        - { name: catalog, default: "${var.catalog}" }
+        - { name: schema, default: "${var.schema}" }
+        - { name: lakebase_project, default: "${var.lakebase_project}" }
+        - { name: n_companies, default: "${var.n_companies}" }
+      tasks:
+        - task_key: market_intel
+          notebook_task: { notebook_path: ../src/06_market_intel.py }

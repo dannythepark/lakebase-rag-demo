@@ -1,0 +1,44 @@
+bundle:
+  name: lakebase-rag-demo
+
+include:
+  - resources/*.yml
+
+sync:
+  exclude:
+    - .venv/**
+    - app/frontend/**
+    - "**/__pycache__/**"
+
+variables:
+  catalog:
+    default: demo_catalog
+  schema:
+    default: rag_demo
+  lakebase_project:
+    default: lakebase-rag-demo
+  lakebase_branch:
+    default: projects/lakebase-rag-demo/branches/production
+  lakebase_database:
+    default: projects/lakebase-rag-demo/branches/production/databases/databricks-postgres
+  embedding_endpoint:
+    default: databricks-gte-large-en
+  embedding_dim:
+    default: "1024"
+  alt_embedding_endpoint:
+    default: databricks-qwen3-embedding-0-6b
+  llm_endpoint:
+    default: databricks-claude-haiku-4-5
+  partner_llm_endpoint:
+    default: databricks-claude-sonnet-4-6
+  n_articles:
+    default: "3000"
+  n_companies:
+    default: "4500000"
+
+targets:
+  demo:
+    mode: development
+    default: true
+    workspace:
+      host: https://<workspace-host>

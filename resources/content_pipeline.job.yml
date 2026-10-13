@@ -1,0 +1,38 @@
+resources:
+  jobs:
+    content_pipeline:
+      name: "Lakebase RAG Demo · content pipeline (generate → Lakebase → search → showcase → cost)"
+      parameters:
+        - { name: catalog, default: "${var.catalog}" }
+        - { name: schema, default: "${var.schema}" }
+        - { name: lakebase_project, default: "${var.lakebase_project}" }
+        - { name: embedding_endpoint, default: "${var.embedding_endpoint}" }
+        - { name: embedding_dim, default: "${var.embedding_dim}" }
+        - { name: alt_embedding_endpoint, default: "${var.alt_embedding_endpoint}" }
+        - { name: llm_endpoint, default: "${var.llm_endpoint}" }
+        - { name: partner_llm_endpoint, default: "${var.partner_llm_endpoint}" }
+        - { name: n_articles, default: "${var.n_articles}" }
+        - { name: n_companies, default: "${var.n_companies}" }
+      tasks:
+        - task_key: generate_data
+          notebook_task: { notebook_path: ../src/01_generate_data.py }
+        - task_key: lakebase_setup
+          notebook_task: { notebook_path: ../src/02_lakebase_setup.py }
+        - task_key: embed_and_load
+          depends_on: [{ task_key: generate_data }, { task_key: lakebase_setup }]
+          notebook_task: { notebook_path: ../src/03_embed_and_load.py }
+        - task_key: market_intel
+          depends_on: [{ task_key: lakebase_setup }]
+          notebook_task: { notebook_path: ../src/06_market_intel.py }
+        - task_key: hybrid_search
+          depends_on: [{ task_key: embed_and_load }]
+          notebook_task: { notebook_path: ../src/04_hybrid_search.py }
+        - task_key: model_swap
+          depends_on: [{ task_key: embed_and_load }]
+          notebook_task: { notebook_path: ../src/05_model_swap.py }
+        - task_key: search_showcase
+          depends_on: [{ task_key: hybrid_search }, { task_key: model_swap }, { task_key: market_intel }]
+          notebook_task: { notebook_path: ../src/00_lakebase_search_showcase.py }
+        - task_key: cost_model
+          depends_on: [{ task_key: search_showcase }]
+          notebook_task: { notebook_path: ../src/07_cost_model.py }

@@ -1,0 +1,3 @@
+databricks-sdk>=0.81
+psycopg[binary]>=3.2
+psycopg-pool>=3.2
